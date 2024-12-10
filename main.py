@@ -2,6 +2,7 @@ import pgzrun
 TITLE="Gallaga"
 WIDTH=1200
 HEIGHT=600
+gameover=False
 score=0
 direction=1
 speed=5
@@ -24,9 +25,13 @@ def draw():
         bullet.draw()
     for b in bugs:
         b.draw()
+    screen.draw.text("Score:"+str(score),(50,50))
+    if gameover:
+        screen.fill("red")
+        screen.draw.text("GAMEOVER,TRY AGAIN!",(600,300))
 
 def update():
-    global direction,score
+    global direction,score,gameover
     movedown=False
     if keyboard.left:
         gallaga.x-=speed
@@ -54,10 +59,17 @@ def update():
                 bullets.remove(bullet)
                 score+=1
                 sounds.sound.play()
+        if bug.y>HEIGHT:
+            gameover=True
         if movedown:
             bug.y+=20
         if bug.colliderect(gallaga):
             gallaga.dead=True
+    if gallaga.dead:
+        gallaga.countdown-=1
+    if gallaga.countdown==0:
+        gallaga.dead=False
+        gallaga.countdown=90
 
 def on_key_down(key):
     if key==keys.SPACE:
